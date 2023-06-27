@@ -1,0 +1,113 @@
+﻿using System.Text.Json.Serialization;
+using System.Xml;
+
+namespace Facepunch.AssemblySchema;
+
+public class Documentation
+{
+    public string Summary { get; set; }
+    public string Remarks { get; set; }
+    public string Return { get; set; }
+
+    public Dictionary<string, string> Params { get; set; }
+    public Dictionary<string, string> Exceptions { get; set; }
+    public Dictionary<string, string> TypeParams { get; set; }
+    public string[] Examples { get; set; }
+
+    // TODO - handle inherit by flattening if possible
+   // public string[] Inherit { get; set; }
+
+    /// <summary>
+    /// The resolution name, this is only used during build
+    /// </summary>
+    [JsonIgnore]
+    internal string Name { get; private set; }
+
+    internal static Documentation ParseFromNode(XmlNode m)
+    {
+        if (m.Attributes == null)
+            return default;
+
+        var d = new Documentation();
+
+        var inherit = m.SelectNodes("inheritdoc");
+        if (inherit.Count > 0)
+        {
+            List<string> inherits = new();
+            foreach (var x in inherit.OfType<XmlNode>())
+            {
+                if (x.Attributes["cref"] is null) continue;
+
+                inherits.Add(x.Attributes["cref"].Value);
+            }
+
+           // if (inherits.Count > 0)
+           //     d.Inherit = inherits.ToArray();
+        }
+
+        d.Summary = m.SelectSingleNode("summary")?.InnerXml.Trim();
+        d.Remarks = m.SelectSingleNode("remarks")?.InnerXml.Trim();
+        d.Return = m.SelectSingleNode("returns")?.InnerXml.Trim();
+
+        var examples = m.SelectNodes("example");
+        if (examples.Count > 0)
+        {
+            d.Examples = examples.OfType<XmlNode>().Select(x => x.InnerXml.Trim()).ToArray();
+        }
+
+        var parms = m.SelectNodes("param");
+        if (parms.Count > 0)
+        {
+            d.Params = new();
+            foreach (var x in parms.OfType<XmlNode>())
+            {
+                var key = x.Attributes["name"].Value.Trim();
+                if (d.Params.ContainsKey(key)) continue;
+                d.Params.Add(key, x.InnerXml.Trim());
+            }
+        }
+
+        var typeparms = m.SelectNodes("typeparam");
+        if (typeparms.Count > 0)
+        {
+            d.TypeParams = new();
+            foreach (var x in typeparms.OfType<XmlNode>())
+            {
+                var key = x.Attributes["name"].Value.Trim();
+                if (d.Params.ContainsKey(key)) continue;
+                d.Params.Add(key, x.InnerXml.Trim());
+            }
+        }
+
+        var exceptions = m.SelectNodes("exception");
+        if (exceptions.Count > 0)
+        {
+            d.Exceptions = new();
+            foreach (var x in exceptions.OfType<XmlNode>())
+            {
+                var key = x.Attributes["cref"].Value[2..].Trim('/');
+                if (d.Exceptions.ContainsKey(key)) continue;
+                d.Exceptions.Add(key, x.InnerXml.Trim());
+            }
+        }
+
+        d.Name = m.Attributes["name"].Value;
+        return d;
+    }
+
+    public void InheritFrom(Documentation d)
+    {
+        Summary ??= d.Summary;
+        Remarks ??= d.Remarks;
+        Return ??= d.Return;
+
+        foreach (var param in d.Params.Where(x => !Params.ContainsKey(x.Key)))
+            Params[param.Key] = param.Value;
+
+        foreach (var param in d.TypeParams.Where(x => !TypeParams.ContainsKey(x.Key)))
+            TypeParams[param.Key] = param.Value;
+
+        foreach (var param in d.Exceptions.Where(x => !Exceptions.ContainsKey(x.Key)))
+            Exceptions[param.Key] = param.Value;
+    }
+}
