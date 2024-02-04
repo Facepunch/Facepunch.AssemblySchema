@@ -28,5 +28,16 @@ public partial class Schema
 			if (t.Constructors is not null) t.Constructors = t.Constructors.Where(x => x.IsPublic).ToList();
 		}
 	}
+
+	/// <summary>
+	/// Restore all the transient data, after being deserialized
+	/// </summary>
+	public void Rebuild()
+	{
+		foreach (var t in Types)
+		{
+			t.Restore(this);
+		}
+	}
 }
 

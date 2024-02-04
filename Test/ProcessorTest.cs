@@ -29,6 +29,11 @@ public class ProcessorTest
 			Console.WriteLine($"{type.FullName}");
 		}
 
+		var town = data.Types.FirstOrDefault(x => x.Name == "Town");
+		Assert.IsNotNull(town);
+		Assert.IsNotNull(town.Documentation);
+		Assert.IsNotNull(town.Documentation.Summary);
+
 		var sp = data.Types.FirstOrDefault(x => x.Name == "Springfield");
 		Assert.IsNotNull(sp);
 		Assert.IsNotNull(sp.Documentation);
@@ -48,6 +53,25 @@ public class ProcessorTest
 		Assert.IsNotNull(bart);
 		Assert.IsNotNull(bart.Documentation);
 		Assert.IsNotNull(bart.Documentation.Summary);
+
+		var tagAttr = data.Types.FirstOrDefault(x => x.Name == "TagAttribute");
+		Assert.IsNotNull(tagAttr);
+		Assert.IsTrue(tagAttr.IsAttribute);
+
+		Assert.IsNull(sp.GetBaseType());
+
+		// Rebuild transient data
+		data.Rebuild();
+
+		Assert.AreEqual(sp.BaseType, "Town");
+		Assert.IsNotNull(sp.GetBaseType());
+		Assert.IsNotNull(sp.GetBaseType());
+
+		Assert.IsNotNull(town.GetDerivedTypes());
+		Assert.IsTrue(town.GetDerivedTypes().Contains(sp));
+
+		Assert.AreNotEqual(0, town.GetUsage().Count()); // town is used as an argument in a parameter
+
 	}
 
 	[TestMethod]
@@ -106,9 +130,23 @@ public class ProcessorTest
 
 		var result = processor.Build();
 
-		foreach (var t in result.Types.Where(x => x.IsPublic && x.Documentation?.Summary is not null))
+		result.Rebuild();
+
+		// can we get a list of components
+		var component = result.Types.FirstOrDefault(x => x.Name == "Component");
+		Assert.IsNotNull(component);
+
+		foreach (var c in component.GetDerivedTypes())
 		{
-			Console.WriteLine($"{t.FullName} - {t.Documentation.Summary}");
+			Console.WriteLine($"{c.FullName}");
+		}
+
+		var physicsBody = result.Types.FirstOrDefault(x => x.Name == "PhysicsBody");
+		Assert.IsNotNull(physicsBody);
+
+		foreach (var c in physicsBody.GetUsage().Where(x => x.IsPublic))
+		{
+			Console.WriteLine($"{c.FullName}");
 		}
 	}
 }

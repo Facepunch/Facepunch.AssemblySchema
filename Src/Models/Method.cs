@@ -2,16 +2,16 @@
 
 public partial class Schema
 {
-    public class Method : BaseMember
+	public class Method : BaseMember
 	{
-        public string ReturnType { get; set; }
-        public List<Parameter> Parameters { get; set; }
+		public string ReturnType { get; set; }
+		public List<Parameter> Parameters { get; set; }
 
 		public class Parameter
-        {
-            public string Name { get; set; }
-            public bool IsOut { get; set; }
-            public string ParameterType { get; set; }
+		{
+			public string Name { get; set; }
+			public bool IsOut { get; set; }
+			public string ParameterType { get; set; }
 
 			internal static Parameter From(ParameterDefinition x)
 			{
@@ -21,11 +21,22 @@ public partial class Schema
 				a.ParameterType = x.ParameterType.FullName;
 				return a;
 			}
+
+			Type _parameterType;
+			public Type GetParameterType() => _parameterType;
+
+			internal void Restore(Method method, Type type, Schema schema)
+			{
+				var _parameterType = schema.FindType(ParameterType);
+				if (_parameterType is null) return;
+
+				_parameterType.RegisterUsage(method);
+			}
 		}
 
 		internal static Method From(Builder builder, Type t, MethodDefinition member)
 		{
-            var m = new Method();
+			var m = new Method();
 			m.Name = member.Name;
 			m.ReturnType = member.ReturnType?.FullName ?? "void";
 			m.IsPublic = member.IsPublic;
@@ -37,6 +48,25 @@ public partial class Schema
 			m.Parameters = member.Parameters.Select(x => Parameter.From(x)).ToList();
 
 			return m;
+		}
+
+		Type _returnType;
+		public Type GetReturnType() => _returnType;
+
+		internal override void Restore(Type type, Schema schema)
+		{
+			base.Restore(type, schema);
+
+			_returnType = schema.FindType(ReturnType);
+			_returnType?.RegisterUsage(this);
+
+			if (Parameters is not null)
+			{
+				foreach (var p in Parameters)
+				{
+					p.Restore(this, type, schema);
+				}
+			}
 		}
 	}
 }

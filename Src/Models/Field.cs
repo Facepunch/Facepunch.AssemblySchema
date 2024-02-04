@@ -2,9 +2,9 @@
 
 public partial class Schema
 {
-    public class Field : BaseMember
+	public class Field : BaseMember
 	{
-        public string FieldType { get; set; }
+		public string FieldType { get; set; }
 
 		internal static Field From(Builder builder, Type t, FieldDefinition member)
 		{
@@ -17,6 +17,21 @@ public partial class Schema
 			m.Attributes = Attribute.From(member.CustomAttributes);
 			m.Documentation = builder.FindDocumentation($"F:{member.DeclaringType.FullName}.{member.Name}");
 			return m;
+		}
+
+		Type _fieldType;
+		public Type GetFieldType() => _fieldType;
+
+		internal override void Restore(Type type, Schema schema)
+		{
+			base.Restore(type, schema);
+
+			_fieldType = schema.FindType(FieldType);
+
+			if (_fieldType is not null)
+			{
+				_fieldType.RegisterUsage(this);
+			}
 		}
 	}
 }
