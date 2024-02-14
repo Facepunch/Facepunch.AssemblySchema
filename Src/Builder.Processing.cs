@@ -57,7 +57,7 @@ public partial class Builder
 		t.DeclaringType = type.DeclaringType?.FullName;
 		t.Group = "class";
 		t.Attributes = Schema.Attribute.From(type.CustomAttributes);
-		t.Documentation = FindDocumentation($"T:{type.FullName}");
+		t.Documentation = FindDocumentation($"T:{t.FullName}");
 
 		if (type.IsValueType) t.Group = "struct";
 		if (type.IsInterface) t.Group = "interface";

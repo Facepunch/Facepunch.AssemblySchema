@@ -46,6 +46,11 @@ public class Town
 	/// </summary>
 	public string TownName { get; set; }
 
+	/// <summary>
+	/// House is full of <a href="http://ikea.com">nice house furniture</a>. 
+	/// A house is in a <see cref="Town"/>. 
+	/// You can change the <see cref="House.HouseNumber"/> to change the house's house number.
+	/// </summary>
 	public class House
 	{
 		public int HouseNumber { get; set; }

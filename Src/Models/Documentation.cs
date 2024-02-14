@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using System.Xml;
 
 namespace Facepunch.AssemblySchema;
@@ -13,6 +14,17 @@ public class Documentation
 	public Dictionary<string, string> Exceptions { get; set; }
 	public Dictionary<string, string> TypeParams { get; set; }
 	public string[] Examples { get; set; }
+
+
+	Lazy<string> _summaryPlain;
+
+	[JsonIgnore]
+	public string SummaryPlainText => _summaryPlain.Value;
+
+	Documentation()
+	{
+		_summaryPlain = new Lazy<string>(() => XmlDocumentation.XmlToPlainText(Summary));
+	}
 
 	// TODO - handle inherit by flattening if possible
 	// public string[] Inherit { get; set; }
@@ -45,14 +57,14 @@ public class Documentation
 			//     d.Inherit = inherits.ToArray();
 		}
 
-		d.Summary = m.SelectSingleNode("summary")?.InnerXml.Trim();
-		d.Remarks = m.SelectSingleNode("remarks")?.InnerXml.Trim();
-		d.Return = m.SelectSingleNode("returns")?.InnerXml.Trim();
+		d.Summary = CleanXml(m.SelectSingleNode("summary")?.InnerXml);
+		d.Remarks = CleanXml(m.SelectSingleNode("remarks")?.InnerXml);
+		d.Return = CleanXml(m.SelectSingleNode("returns")?.InnerXml);
 
 		var examples = m.SelectNodes("example");
 		if (examples.Count > 0)
 		{
-			d.Examples = examples.OfType<XmlNode>().Select(x => x.InnerXml.Trim()).ToArray();
+			d.Examples = examples.OfType<XmlNode>().Select(x => CleanXml(x.InnerXml)).ToArray();
 		}
 
 		var parms = m.SelectNodes("param");
@@ -63,7 +75,7 @@ public class Documentation
 			{
 				var key = x.Attributes["name"].Value.Trim();
 				if (d.Params.ContainsKey(key)) continue;
-				d.Params.Add(key, x.InnerXml.Trim());
+				d.Params.Add(key, CleanXml(x.InnerXml));
 			}
 		}
 
@@ -75,7 +87,7 @@ public class Documentation
 			{
 				var key = x.Attributes["name"].Value.Trim();
 				if (d.TypeParams.ContainsKey(key)) continue;
-				d.TypeParams.Add(key, x.InnerXml.Trim());
+				d.TypeParams.Add(key, CleanXml(x.InnerXml));
 			}
 		}
 
@@ -87,12 +99,26 @@ public class Documentation
 			{
 				var key = x.Attributes["cref"].Value[2..].Trim('/');
 				if (d.Exceptions.ContainsKey(key)) continue;
-				d.Exceptions.Add(key, x.InnerXml.Trim());
+				d.Exceptions.Add(key, CleanXml(x.InnerXml));
 			}
 		}
 
 		d.Name = m.Attributes["name"].Value;
 		return d;
+	}
+
+	private static string CleanXml(string innerXml)
+	{
+		if (innerXml is null) return "";
+
+		// replace multiple spaces with max one space
+		// except at the end or start of lines, in which case remove the space completely
+		innerXml = Regex.Replace(innerXml, @"[^\S\r\n]+", " ");
+
+		// allow at most two newlines in a row
+		innerXml = Regex.Replace(innerXml, @"(\r?\n){3,}", "\n\n");
+
+		return innerXml;
 	}
 
 	public void InheritFrom(Documentation d)

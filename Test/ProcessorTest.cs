@@ -161,4 +161,43 @@ public class ProcessorTest
 		Assert.AreEqual("Town.House", house.FullName);
 		Assert.AreEqual("House", house.Name);
 	}
+
+	[TestMethod]
+	public void Documentation()
+	{
+		var data = GetSchema();
+
+		var house = data.Types.FirstOrDefault(x => x.Name == "Springfield");
+		Assert.IsNotNull(house);
+		Assert.IsNotNull(house.Documentation);
+		Assert.IsNotNull(house.Documentation.Summary);
+	}
+
+	[TestMethod]
+	public void DocumentationChildClass()
+	{
+		var data = GetSchema();
+
+		var house = data.Types.FirstOrDefault(x => x.Name == "House");
+		Assert.IsNotNull(house);
+		Assert.IsNotNull(house.Documentation);
+		Assert.IsNotNull(house.Documentation.Summary);
+	}
+
+	[TestMethod]
+	public void Documentation_PlainText()
+	{
+		var data = GetSchema();
+
+		var house = data.Types.FirstOrDefault(x => x.Name == "House");
+		Assert.IsNotNull(house);
+		Assert.IsTrue(house.Documentation.Summary.Contains("<a"));
+		Assert.IsFalse(house.Documentation.SummaryPlainText.Contains("<a"));
+
+		Console.WriteLine(house.Documentation.Summary);
+
+		Console.WriteLine("\n\n");
+
+		Console.WriteLine(house.Documentation.SummaryPlainText);
+	}
 }
