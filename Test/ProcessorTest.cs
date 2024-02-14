@@ -17,6 +17,18 @@ public class ProcessorTest
 	}
 
 	[TestMethod]
+	public void SerializeSchema()
+	{
+		var s = GetSchema();
+
+		var json = JsonSerializer.Serialize(s);
+		Assert.IsNotNull(json);
+
+		var dejson = JsonSerializer.Deserialize<Schema>(json);
+		Assert.IsNotNull(dejson);
+	}
+
+	[TestMethod]
 	public void BasicTests()
 	{
 		var data = GetSchema();

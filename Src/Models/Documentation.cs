@@ -21,7 +21,7 @@ public class Documentation
 	[JsonIgnore]
 	public string SummaryPlainText => _summaryPlain.Value;
 
-	Documentation()
+	public Documentation()
 	{
 		_summaryPlain = new Lazy<string>(() => XmlDocumentation.XmlToPlainText(Summary));
 	}
