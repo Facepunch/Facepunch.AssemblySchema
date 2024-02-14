@@ -5,6 +5,9 @@ public partial class Schema
 	public class Method : BaseMember
 	{
 		public string ReturnType { get; set; }
+		public bool IsVirtual { get; set; }
+		public bool IsOverride { get; set; }
+		public bool IsSealed { get; set; }
 		public List<Parameter> Parameters { get; set; }
 
 		public class Parameter
@@ -42,6 +45,9 @@ public partial class Schema
 			m.IsPublic = member.IsPublic;
 			m.FullName = $"{t.FullName}.{m.Name}";
 			m.IsStatic = member.IsStatic;
+			m.IsVirtual = member.IsVirtual;
+			m.IsOverride = member.HasOverrides;
+			m.IsSealed = member.IsFinal;
 			m.DeclaringType = t.FullName;
 			m.Attributes = Schema.Attribute.From(member.CustomAttributes);
 			m.Documentation = builder.FindDocumentation($"M:{member.DeclaringType.FullName}.{member.Name}");

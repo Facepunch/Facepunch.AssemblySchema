@@ -5,6 +5,9 @@ public partial class Schema
 	public class Property : BaseMember
 	{
 		public string PropertyType { get; set; }
+		public bool IsVirtual { get; set; }
+		public bool IsOverride { get; set; }
+		public bool IsSealed { get; set; }
 
 		internal static Property From(Builder builder, Type t, PropertyDefinition member)
 		{
@@ -15,6 +18,9 @@ public partial class Schema
 			m.IsPublic = m.IsPublic || (member.SetMethod?.IsPublic ?? false);
 			m.FullName = $"{t.FullName}.{m.Name}";
 			m.IsStatic = member.GetMethod?.IsStatic ?? member.SetMethod.IsStatic;
+			m.IsVirtual = member.GetMethod?.IsVirtual ?? member.SetMethod.IsVirtual;
+			m.IsOverride = member.GetMethod?.HasOverrides ?? member.SetMethod.HasOverrides;
+			m.IsSealed = member.GetMethod?.IsFinal ?? member.SetMethod.IsFinal;
 			m.Attributes = Attribute.From(member.CustomAttributes);
 			m.Documentation = builder.FindDocumentation($"P:{member.DeclaringType.FullName}.{member.Name}");
 
