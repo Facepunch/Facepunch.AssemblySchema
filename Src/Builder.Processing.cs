@@ -44,7 +44,7 @@ public partial class Builder
 		t.Source = type;
 		t.IsPublic = type.IsPublic;
 		t.IsStatic = type.IsSealed && type.IsAbstract;
-		t.FullName = type.FullName;
+		t.FullName = type.FullName.Replace("/", ".");
 		t.Namespace = type.Namespace;
 		t.Name = type.Name;
 		t.IsAttribute = type.IsClass && IsAttribute(type);

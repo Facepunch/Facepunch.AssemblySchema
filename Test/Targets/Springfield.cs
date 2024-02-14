@@ -45,6 +45,11 @@ public class Town
 	/// Name of the town
 	/// </summary>
 	public string TownName { get; set; }
+
+	public class House
+	{
+		public int HouseNumber { get; set; }
+	}
 }
 
 public class TagAttribute : Attribute

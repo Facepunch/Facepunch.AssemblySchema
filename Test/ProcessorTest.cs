@@ -148,5 +148,17 @@ public class ProcessorTest
 		{
 			Console.WriteLine($"{c.FullName}");
 		}
+
+	}
+
+	[TestMethod]
+	public void ChildClasses()
+	{
+		var data = GetSchema();
+
+		var house = data.Types.FirstOrDefault(x => x.Name == "House");
+		Assert.IsNotNull(house);
+		Assert.AreEqual("Town.House", house.FullName);
+		Assert.AreEqual("House", house.Name);
 	}
 }
