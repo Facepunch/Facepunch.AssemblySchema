@@ -9,7 +9,7 @@ public partial class Schema
 		public bool IsOverride { get; set; }
 		public bool IsSealed { get; set; }
 
-		internal static Property From(Builder builder, Type t, PropertyDefinition member)
+		internal static Property From( Builder builder, Type t, PropertyDefinition member )
 		{
 			var m = new Property();
 			m.Name = member.Name;
@@ -21,8 +21,8 @@ public partial class Schema
 			m.IsVirtual = member.GetMethod?.IsVirtual ?? member.SetMethod.IsVirtual;
 			m.IsOverride = member.GetMethod?.HasOverrides ?? member.SetMethod.HasOverrides;
 			m.IsSealed = member.GetMethod?.IsFinal ?? member.SetMethod.IsFinal;
-			m.Attributes = Attribute.From(member.CustomAttributes);
-			m.Documentation = builder.FindDocumentation($"P:{member.DeclaringType.FullName}.{member.Name}");
+			m.Attributes = Attribute.From( member.CustomAttributes );
+			m.Documentation = builder.FindDocumentation( $"P:{member.DeclaringType.FullName}.{member.Name}" );
 
 			return m;
 		}
@@ -30,15 +30,15 @@ public partial class Schema
 		Type _propertyType;
 		public Type GetPropertyType() => _propertyType;
 
-		internal override void Restore(Type type, Schema schema)
+		internal override void Restore( Type type, Schema schema )
 		{
-			base.Restore(type, schema);
+			base.Restore( type, schema );
 
-			_propertyType = schema.FindType(PropertyType);
+			_propertyType = schema.FindType( PropertyType );
 
-			if (_propertyType is not null)
+			if ( _propertyType is not null )
 			{
-				_propertyType.RegisterUsage(this);
+				_propertyType.RegisterUsage( this );
 			}
 		}
 	}

@@ -1,9 +1,14 @@
-﻿namespace Facepunch.AssemblySchema;
+﻿using System.Text.Json.Serialization;
+
+namespace Facepunch.AssemblySchema;
 
 public partial class Schema
 {
 	public class Method : BaseMember
 	{
+		[JsonIgnore]
+		internal MethodDefinition Source { get; set; }
+
 		public string ReturnType { get; set; }
 		public bool IsVirtual { get; set; }
 		public bool IsOverride { get; set; }
@@ -16,7 +21,7 @@ public partial class Schema
 			public bool IsOut { get; set; }
 			public string ParameterType { get; set; }
 
-			internal static Parameter From(ParameterDefinition x)
+			internal static Parameter From( ParameterDefinition x )
 			{
 				var a = new Parameter();
 				a.Name = x.Name;
@@ -28,18 +33,18 @@ public partial class Schema
 			Type _parameterType;
 			public Type GetParameterType() => _parameterType;
 
-			internal void Restore(Method method, Type type, Schema schema)
+			internal void Restore( Method method, Type type, Schema schema )
 			{
-				var _parameterType = schema.FindType(ParameterType);
-				if (_parameterType is null) return;
-
-				_parameterType.RegisterUsage(method);
+				_parameterType = schema.FindType( ParameterType );
+				if ( _parameterType is null ) return;
+				_parameterType.RegisterUsage( method );
 			}
 		}
 
-		internal static Method From(Builder builder, Type t, MethodDefinition member)
+		internal static Method From( Builder builder, Type t, MethodDefinition member )
 		{
 			var m = new Method();
+			m.Source = member;
 			m.Name = member.Name;
 			m.ReturnType = member.ReturnType?.FullName ?? "void";
 			m.IsPublic = member.IsPublic;
@@ -49,9 +54,9 @@ public partial class Schema
 			m.IsOverride = member.HasOverrides;
 			m.IsSealed = member.IsFinal;
 			m.DeclaringType = t.FullName;
-			m.Attributes = Schema.Attribute.From(member.CustomAttributes);
-			m.Documentation = builder.FindDocumentation($"M:{member.DeclaringType.FullName}.{member.Name}");
-			m.Parameters = member.Parameters.Select(x => Parameter.From(x)).ToList();
+			m.Attributes = Schema.Attribute.From( member.CustomAttributes );
+			m.Documentation = builder.FindDocumentation( $"M:{member.DeclaringType.FullName}.{member.Name}" );
+			m.Parameters = member.Parameters.Select( x => Parameter.From( x ) ).ToList();
 
 			return m;
 		}
@@ -59,19 +64,25 @@ public partial class Schema
 		Type _returnType;
 		public Type GetReturnType() => _returnType;
 
-		internal override void Restore(Type type, Schema schema)
+		internal override void Restore( Type type, Schema schema )
 		{
-			base.Restore(type, schema);
+			base.Restore( type, schema );
 
-			_returnType = schema.FindType(ReturnType);
-			_returnType?.RegisterUsage(this);
+			_returnType = schema.FindType( ReturnType );
+			_returnType?.RegisterUsage( this );
 
-			if (Parameters is not null)
+			if ( Parameters is not null )
 			{
-				foreach (var p in Parameters)
+				foreach ( var p in Parameters )
 				{
-					p.Restore(this, type, schema);
+					p.Restore( this, type, schema );
 				}
+			}
+
+			if ( IsExtension && Parameters.First()?.GetParameterType() is { } extensionTarget )
+			{
+				extensionTarget.Methods ??= new();
+				extensionTarget.Methods.Add( this );
 			}
 		}
 	}

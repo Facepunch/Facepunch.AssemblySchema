@@ -19,23 +19,23 @@ public partial class Schema
 		/// </summary>
 		public List<Type> GetDerivedTypes() => _derivedTypes;
 
-		public void Restore(Schema schema)
+		public void Restore( Schema schema )
 		{
-			_baseType = schema.FindType(BaseType);
-			_derivedTypes = schema.Types.Where(x => x.BaseType == FullName).ToList();
+			_baseType = schema.FindType( BaseType );
+			_derivedTypes = schema.Types.Where( x => x.BaseType == FullName ).ToList();
 
-			foreach (var member in Members())
+			foreach ( var member in Members().ToArray() )
 			{
-				member.Restore(this, schema);
+				member.Restore( this, schema );
 			}
 		}
 	}
 
-	private Type FindType(string typeName, bool isAttribute = false)
+	private Type FindType( string typeName, bool isAttribute = false )
 	{
-		if (isAttribute && !typeName.EndsWith("Attribute"))
-			return Types.FirstOrDefault(x => x.FullName == typeName || x.FullName == $"{typeName}Attribute");
+		if ( isAttribute && !typeName.EndsWith( "Attribute" ) )
+			return Types.FirstOrDefault( x => x.FullName == typeName || x.FullName == $"{typeName}Attribute" );
 
-		return Types.FirstOrDefault(x => x.FullName == typeName);
+		return Types.FirstOrDefault( x => x.FullName == typeName );
 	}
 }

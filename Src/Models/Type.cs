@@ -27,23 +27,25 @@ public partial class Schema
 		/// <summary>
 		/// Complete any actions that are only really possible after processing everything else.
 		/// </summary>
-		internal void Polish(Schema info)
+		internal void Polish( Schema info )
 		{
-			if (Source.BaseType is not null)
+			if ( Source.BaseType is not null )
 			{
 				var baseTypeName = Source.BaseType.FullName;
-				if (Source.BaseType.IsGenericInstance) baseTypeName = baseTypeName.Split('<')[0];
+				if ( Source.BaseType.IsGenericInstance ) baseTypeName = baseTypeName.Split( '<' )[0];
 
-				BaseType = info.Types.FirstOrDefault(x => x.Source.FullName == baseTypeName)?.FullName;
+				BaseType = info.Types.FirstOrDefault( x => x.Source.FullName == baseTypeName )?.FullName;
 
-				if (BaseType is null)
+				if ( BaseType is null )
 				{
 					BaseType = Source.BaseType.FullName;
 				}
 			}
 
-			if (BaseType == "System.Object") BaseType = null;
-			if (BaseType == "System.ValueType") BaseType = null;
+			if ( BaseType == "System.Object" ) BaseType = null;
+			if ( BaseType == "System.ValueType" ) BaseType = null;
+
+			DiscoverExtensions();
 		}
 
 		/// <summary>
@@ -51,33 +53,33 @@ public partial class Schema
 		/// </summary>
 		public IEnumerable<BaseMember> Members()
 		{
-			if (Methods is not null)
+			if ( Methods is not null )
 			{
-				foreach (var member in Methods)
+				foreach ( var member in Methods )
 				{
 					yield return member;
 				}
 			}
 
-			if (Constructors is not null)
+			if ( Constructors is not null )
 			{
-				foreach (var member in Constructors)
+				foreach ( var member in Constructors )
 				{
 					yield return member;
 				}
 			}
 
-			if (Properties is not null)
+			if ( Properties is not null )
 			{
-				foreach (var member in Properties)
+				foreach ( var member in Properties )
 				{
 					yield return member;
 				}
 			}
 
-			if (Fields is not null)
+			if ( Fields is not null )
 			{
-				foreach (var member in Fields)
+				foreach ( var member in Fields )
 				{
 					yield return member;
 				}
@@ -88,10 +90,10 @@ public partial class Schema
 		HashSet<BaseMember> _usage;
 		public IEnumerable<BaseMember> GetUsage() => _usage ?? Enumerable.Empty<BaseMember>();
 
-		internal void RegisterUsage(BaseMember member)
+		internal void RegisterUsage( BaseMember member )
 		{
 			_usage ??= new();
-			_usage.Add(member);
+			_usage.Add( member );
 		}
 	}
 

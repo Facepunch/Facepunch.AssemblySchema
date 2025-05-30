@@ -6,6 +6,7 @@ public partial class Schema
 	{
 		public bool IsPublic { get; set; }
 		public bool IsStatic { get; set; }
+		public bool IsExtension { get; set; }
 		public string FullName { get; set; }
 		public string Name { get; set; }
 		public string DeclaringType { get; set; }
@@ -15,15 +16,15 @@ public partial class Schema
 		Type _declaringType;
 		public Type GetDeclaringType() => _declaringType;
 
-		internal virtual void Restore(Type type, Schema schema)
+		internal virtual void Restore( Type type, Schema schema )
 		{
 			_declaringType = type;
 
-			if (Attributes is not null)
+			if ( Attributes is not null )
 			{
-				foreach (var attr in Attributes)
+				foreach ( var attr in Attributes )
 				{
-					attr.Restore(this, type, schema);
+					attr.Restore( this, type, schema );
 				}
 			}
 		}

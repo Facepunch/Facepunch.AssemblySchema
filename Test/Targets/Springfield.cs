@@ -70,3 +70,14 @@ public class TagAttribute : Attribute
         Tag = tag;
     }
 }
+
+public static class SpringfieldExtensions
+{
+    /// <summary>
+    /// Is this Springfield a good Springfield?
+    /// </summary>
+    public static bool IsGoodSpringfield(this Springfield springfield)
+    {
+        return springfield.Bart < 5.0f;
+    }
+}

@@ -6,7 +6,7 @@ public partial class Schema
 	{
 		public string FieldType { get; set; }
 
-		internal static Field From(Builder builder, Type t, FieldDefinition member)
+		internal static Field From( Builder builder, Type t, FieldDefinition member )
 		{
 			var m = new Field();
 			m.Name = member.Name;
@@ -14,23 +14,23 @@ public partial class Schema
 			m.IsPublic = member.IsPublic;
 			m.FullName = $"{t.FullName}.{m.Name}";
 			m.IsStatic = member.IsStatic;
-			m.Attributes = Attribute.From(member.CustomAttributes);
-			m.Documentation = builder.FindDocumentation($"F:{member.DeclaringType.FullName}.{member.Name}");
+			m.Attributes = Attribute.From( member.CustomAttributes );
+			m.Documentation = builder.FindDocumentation( $"F:{member.DeclaringType.FullName}.{member.Name}" );
 			return m;
 		}
 
 		Type _fieldType;
 		public Type GetFieldType() => _fieldType;
 
-		internal override void Restore(Type type, Schema schema)
+		internal override void Restore( Type type, Schema schema )
 		{
-			base.Restore(type, schema);
+			base.Restore( type, schema );
 
-			_fieldType = schema.FindType(FieldType);
+			_fieldType = schema.FindType( FieldType );
 
-			if (_fieldType is not null)
+			if ( _fieldType is not null )
 			{
-				_fieldType.RegisterUsage(this);
+				_fieldType.RegisterUsage( this );
 			}
 		}
 	}
