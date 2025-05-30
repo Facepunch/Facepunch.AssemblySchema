@@ -120,6 +120,9 @@ public class Documentation
 		// remove spaces at the start, if any
 		innerXml = innerXml.Unindent();
 
+		// remove any trailing bullshit
+		innerXml = innerXml.TrimEnd( ['\n', '\r', '\t', ' '] );
+
 		return innerXml;
 	}
 
