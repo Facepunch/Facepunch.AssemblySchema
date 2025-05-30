@@ -57,7 +57,8 @@ public partial class Builder
 		t.DeclaringType = type.DeclaringType?.FullName;
 		t.Group = "class";
 		t.Attributes = Schema.Attribute.From( type.CustomAttributes );
-		t.Documentation = FindDocumentation( $"T:{t.FullName}" );
+		t.DocumentationId = GetDocumentationId( type );
+		t.Documentation = FindDocumentation( t.DocumentationId );
 
 		if ( type.IsValueType ) t.Group = "struct";
 		if ( type.IsInterface ) t.Group = "interface";
@@ -105,18 +106,31 @@ public partial class Builder
 
 	private void ProcessMethod( Schema.Type t, MethodDefinition member )
 	{
+		if ( member.IsConstructor )
+		{
+			ProcessConstructor( t, member );
+			return;
+		}
+
 		if ( member.IsPrivate ) return;
 		if ( member.IsSpecialName ) return;
-		if ( member.Name == "GetHashCode" ) return;
-		if ( member.Name == "ToString" ) return;
-		if ( member.Name == "Equals" ) return;
-		if ( member.DeclaringType.Properties.Any( x => x.GetMethod == member || x.SetMethod == member ) )
-			return;
+		if ( member.Name is "GetHashCode" or "ToString" or "Equals" ) return;
+		if ( member.SemanticsAttributes != MethodSemanticsAttributes.None ) return;
 
 		var m = Schema.Method.From( this, t, member );
 
 		t.Methods ??= new List<Schema.Method>();
 		t.Methods.Add( m );
+	}
+
+	private void ProcessConstructor( Schema.Type t, MethodDefinition member )
+	{
+		if ( member.IsPrivate ) return;
+
+		var m = Schema.Method.From( this, t, member );
+
+		t.Constructors ??= new List<Schema.Method>();
+		t.Constructors.Add( m );
 	}
 
 	private void ProcessProperty( Schema.Type t, PropertyDefinition member )

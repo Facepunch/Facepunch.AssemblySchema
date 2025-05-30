@@ -1,4 +1,6 @@
-﻿namespace Facepunch.AssemblySchema;
+﻿using System.Text.Json.Serialization;
+
+namespace Facepunch.AssemblySchema;
 
 public partial class Schema
 {
@@ -10,8 +12,12 @@ public partial class Schema
 		public string FullName { get; set; }
 		public string Name { get; set; }
 		public string DeclaringType { get; set; }
+
 		public List<Attribute> Attributes { get; set; }
 		public Documentation Documentation { get; set; }
+
+		[JsonPropertyName( "docid" )]
+		public string DocumentationId { get; set; }
 
 		Type _declaringType;
 		public Type GetDeclaringType() => _declaringType;

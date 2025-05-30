@@ -22,7 +22,10 @@ public class XmlDocumentation
 			var d = Documentation.ParseFromNode( m );
 			if ( d is null ) continue;
 
-			doc.Entries[d.Name] = d;
+			// Some XML doc generators (like DocFX or Sandcastle) use '.' for nested types instead of '+',
+			// while the C# compiler (csc /doc) uses '+'. We normalize to '.' here so both formats match.
+
+			doc.Entries[d.Name.Replace( '+', '.' )] = d;
 		}
 
 		return doc;

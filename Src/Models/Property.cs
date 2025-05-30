@@ -22,7 +22,8 @@ public partial class Schema
 			m.IsOverride = member.GetMethod?.HasOverrides ?? member.SetMethod.HasOverrides;
 			m.IsSealed = member.GetMethod?.IsFinal ?? member.SetMethod.IsFinal;
 			m.Attributes = Attribute.From( member.CustomAttributes );
-			m.Documentation = builder.FindDocumentation( $"P:{member.DeclaringType.FullName}.{member.Name}" );
+			m.DocumentationId = builder.GetDocumentationId( member );
+			m.Documentation = builder.FindDocumentation( m.DocumentationId );
 
 			return m;
 		}

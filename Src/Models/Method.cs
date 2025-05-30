@@ -55,11 +55,11 @@ public partial class Schema
 			m.IsSealed = member.IsFinal;
 			m.DeclaringType = t.FullName;
 			m.Attributes = Schema.Attribute.From( member.CustomAttributes );
-			m.Documentation = builder.FindDocumentation( $"M:{member.DeclaringType.FullName}.{member.Name}" );
+
 			m.Parameters = member.Parameters.Select( x => Parameter.From( x ) ).ToList();
 
-			if ( m.Parameters.Count == 0 ) m.Parameters = null;
-
+			m.DocumentationId = builder.GetDocumentationId( member );
+			m.Documentation = builder.FindDocumentation( m.DocumentationId );
 			return m;
 		}
 

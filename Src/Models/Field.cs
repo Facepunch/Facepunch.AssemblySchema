@@ -15,7 +15,8 @@ public partial class Schema
 			m.FullName = $"{t.FullName}.{m.Name}";
 			m.IsStatic = member.IsStatic;
 			m.Attributes = Attribute.From( member.CustomAttributes );
-			m.Documentation = builder.FindDocumentation( $"F:{member.DeclaringType.FullName}.{member.Name}" );
+			m.DocumentationId = builder.GetDocumentationId( member );
+			m.Documentation = builder.FindDocumentation( m.DocumentationId );
 			return m;
 		}
 

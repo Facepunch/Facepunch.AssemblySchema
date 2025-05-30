@@ -285,4 +285,39 @@ public class ProcessorTest
 		Assert.IsTrue( extensionMethod.IsExtension );
 		Assert.IsTrue( !sp.IsExtension );
 	}
+
+	[TestMethod]
+	public void DocumentationComplicatedType()
+	{
+		var data = GetSchema();
+		var sp = data.Types.FirstOrDefault( x => x.Name == "GpuBuffer" );
+
+		Assert.IsNotNull( sp );
+		Assert.IsNotNull( sp.Documentation );
+		Assert.IsNotNull( sp.Documentation.Examples );
+
+		Assert.IsFalse( sp.Documentation.SummaryPlainText.Contains( "&lt;" ) ); // should have been parsed properly
+		Assert.AreEqual( 2, sp.Documentation.Examples.Count() );
+		Assert.AreEqual( 2, sp.Documentation.SeeAlso.Count() );
+	}
+
+	[TestMethod]
+	public void DocumentationComplicatedConstructor()
+	{
+		var data = GetSchema();
+		var sp = data.Types.FirstOrDefault( x => x.Name == "GpuBuffer" );
+		Assert.IsNotNull( sp );
+		Assert.IsNotNull( sp.Constructors );
+		Assert.AreEqual( 1, sp.Constructors.Count );
+
+		var cs = sp.Constructors[0];
+
+		Assert.IsNotNull( cs );
+		Assert.IsNotNull( cs.Documentation );
+		Assert.IsNotNull( cs.Documentation.Summary );
+		Assert.IsNotNull( cs.Documentation.Params );
+
+		Console.WriteLine( cs.Documentation.Params.First() );
+		Assert.AreEqual( 2, cs.Documentation.Params.Count() );
+	}
 }
