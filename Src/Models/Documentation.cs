@@ -13,6 +13,7 @@ public class Documentation
 	public Dictionary<string, string> Params { get; set; }
 	public Dictionary<string, string> Exceptions { get; set; }
 	public Dictionary<string, string> TypeParams { get; set; }
+	public List<string> SeeAlso { get; set; }
 	public string[] Examples { get; set; }
 
 
@@ -60,6 +61,12 @@ public class Documentation
 		d.Summary = CleanXml( m.SelectSingleNode( "summary" )?.InnerXml );
 		d.Remarks = CleanXml( m.SelectSingleNode( "remarks" )?.InnerXml );
 		d.Return = CleanXml( m.SelectSingleNode( "returns" )?.InnerXml );
+
+		d.SeeAlso = m.SelectNodes( "seealso" ).OfType<XmlNode>().Select( x => x.Attributes["cref"].Value.Trim() )
+			.Where( x => !string.IsNullOrWhiteSpace( x ) )
+			.ToList();
+
+		if ( d.SeeAlso.Count == 0 ) d.SeeAlso = null;
 
 		var examples = m.SelectNodes( "example" );
 		if ( examples.Count > 0 )
