@@ -1,6 +1,7 @@
 using Facepunch.AssemblySchema;
 using System.IO.Compression;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Test;
 
@@ -26,6 +27,29 @@ public class ProcessorTest
 
 		var dejson = JsonSerializer.Deserialize<Schema>( json );
 		Assert.IsNotNull( dejson );
+
+		Console.WriteLine( json.Length );
+		Console.WriteLine( json );
+	}
+
+	[TestMethod]
+	public void SerializeSchemaMinimal()
+	{
+		var s = GetSchema();
+
+		var options = new JsonSerializerOptions
+		{
+			DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
+		};
+
+		var json = JsonSerializer.Serialize( s, options );
+		Assert.IsNotNull( json );
+
+		var dejson = JsonSerializer.Deserialize<Schema>( json );
+		Assert.IsNotNull( dejson );
+
+		Console.WriteLine( json.Length );
+		Console.WriteLine( json );
 	}
 
 	[TestMethod]
