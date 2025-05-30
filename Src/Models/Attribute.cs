@@ -12,6 +12,8 @@ public partial class Schema
 			var a = new Attribute();
 			a.FullName = x.AttributeType.FullName;
 			a.ConstructorArguments = x.ConstructorArguments.Select( x => $"{x.Value}" ).ToArray();
+			if ( a.ConstructorArguments.Length == 0 ) a.ConstructorArguments = null;
+
 			return a;
 		}
 

@@ -58,6 +58,8 @@ public partial class Schema
 			m.Documentation = builder.FindDocumentation( $"M:{member.DeclaringType.FullName}.{member.Name}" );
 			m.Parameters = member.Parameters.Select( x => Parameter.From( x ) ).ToList();
 
+			if ( m.Parameters.Count == 0 ) m.Parameters = null;
+
 			return m;
 		}
 

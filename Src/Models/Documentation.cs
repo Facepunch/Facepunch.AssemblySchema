@@ -109,7 +109,7 @@ public class Documentation
 
 	private static string CleanXml( string innerXml )
 	{
-		if ( innerXml is null ) return "";
+		if ( innerXml is null ) return null;
 
 		// trim newlines
 		innerXml = innerXml.Trim( ['\n', '\r'] );
