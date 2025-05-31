@@ -20,8 +20,19 @@ public partial class Schema
 
 		public class Parameter
 		{
+			[JsonPropertyName( "n" )]
 			public string Name { get; set; }
+
+			[JsonPropertyName( "o" )]
 			public bool IsOut { get; set; }
+
+			[JsonPropertyName( "i" )]
+			public bool IsIn { get; set; }
+
+			[JsonPropertyName( "r" )]
+			public bool IsRef { get; set; }
+
+			[JsonPropertyName( "t" )]
 			public string ParameterType { get; set; }
 
 			[JsonPropertyName( "d" )]
@@ -31,7 +42,9 @@ public partial class Schema
 			{
 				var a = new Parameter();
 				a.Name = x.Name;
+				a.IsIn = x.IsIn;
 				a.IsOut = x.IsOut;
+				a.IsRef = !x.IsOut && x.ParameterType.IsByReference && !x.IsIn;
 				a.ParameterType = Builder.GetTypeName( x.ParameterType, null );
 
 				if ( x.IsOptional )
