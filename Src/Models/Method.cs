@@ -24,12 +24,26 @@ public partial class Schema
 			public bool IsOut { get; set; }
 			public string ParameterType { get; set; }
 
+			[JsonPropertyName( "d" )]
+			public string DefaultValue { get; set; }
+
 			internal static Parameter From( ParameterDefinition x )
 			{
 				var a = new Parameter();
 				a.Name = x.Name;
 				a.IsOut = x.IsOut;
 				a.ParameterType = x.ParameterType.FullName;
+
+				if ( x.IsOptional )
+				{
+					a.DefaultValue = "default";
+				}
+
+				if ( x.HasConstant )
+				{
+					a.DefaultValue = x.Constant?.ToString() ?? "null";
+				}
+
 				return a;
 			}
 
