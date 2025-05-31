@@ -6,28 +6,14 @@ namespace Facepunch.AssemblySchema;
 
 public class Documentation
 {
-	[JsonPropertyName( "s" )]
 	public string Summary { get; set; }
-
-	[JsonPropertyName( "r" )]
 	public string Remarks { get; set; }
-
-	[JsonPropertyName( "rt" )]
 	public string Return { get; set; }
 
-	[JsonPropertyName( "p" )]
 	public Dictionary<string, string> Params { get; set; }
-
-	[JsonPropertyName( "e" )]
 	public Dictionary<string, string> Exceptions { get; set; }
-
-	[JsonPropertyName( "t" )]
 	public Dictionary<string, string> TypeParams { get; set; }
-
-	[JsonPropertyName( "sa" )]
 	public List<string> SeeAlso { get; set; }
-
-	[JsonPropertyName( "ex" )]
 	public string[] Examples { get; set; }
 
 
