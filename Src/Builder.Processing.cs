@@ -209,7 +209,10 @@ public partial class Builder
 	{
 		if ( propertyType is null ) return @default;
 
-		return propertyType.FullName.Replace( "+", "." ).Replace( "/", "." );
+		var name = propertyType.FullName;
+		name = name.TrimEnd( '&' ); // 'in Vector3' becomes 'Vector3&' - we don't need to see that
+
+		return name.Replace( "+", "." ).Replace( "/", "." );
 	}
 }
 
