@@ -6,6 +6,11 @@ public partial class Schema
 {
 	public partial class Type : BaseMember
 	{
+		/// <summary>
+		/// Used when building to root the source paths
+		/// </summary>
+		internal string _projectPath;
+
 		public string Namespace { get; set; }
 		public string BaseType { get; set; }
 		public List<Method> Methods { get; set; }
@@ -20,6 +25,9 @@ public partial class Schema
 		public bool IsEnum { get; set; }
 		public bool IsValueType { get; set; }
 		public string Group { get; set; }
+
+		[JsonPropertyName( "a" )]
+		public string Assembly { get; set; }
 
 		[JsonIgnore]
 		public TypeDefinition Source { get; set; }

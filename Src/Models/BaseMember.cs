@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using Mono.Cecil.Cil;
+using System.Text.Json.Serialization;
 
 namespace Facepunch.AssemblySchema;
 
@@ -16,7 +17,7 @@ public partial class Schema
 		public List<Attribute> Attributes { get; set; }
 		public Documentation Documentation { get; set; }
 
-		[JsonPropertyName( "docid" )]
+		[JsonPropertyName( "d" )]
 		public string DocumentationId { get; set; }
 
 		Type _declaringType;
@@ -33,6 +34,27 @@ public partial class Schema
 					attr.Restore( this, type, schema );
 				}
 			}
+		}
+	}
+
+	public class Location
+	{
+		[JsonPropertyName( "f" )]
+		public string File { get; set; }
+
+		[JsonPropertyName( "l" )]
+		public int Line { get; set; }
+
+		internal static Location From( Builder builder, MethodDefinition member, string projectPath )
+		{
+			SequencePoint sp = default;
+			sp = member.DebugInformation?.SequencePoints?.FirstOrDefault();
+			if ( sp == null ) return null;
+
+			var file = sp.Document.Url.Replace( "\\", "/" );
+			file = file[projectPath.Length..].TrimStart( '/' );
+
+			return new Location() { File = file, Line = sp.StartLine };
 		}
 	}
 

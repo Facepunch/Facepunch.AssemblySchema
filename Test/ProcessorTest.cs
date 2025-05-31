@@ -8,10 +8,10 @@ namespace Test;
 [TestClass]
 public class ProcessorTest
 {
-	public Schema GetSchema()
+	public Schema GetSchema( bool loadSymbols = true )
 	{
 		using var s = new Facepunch.AssemblySchema.Builder();
-		s.AddAssembly( System.IO.File.ReadAllBytes( GetType().Assembly.Location ) );
+		s.AddAssembly( System.IO.File.ReadAllBytes( GetType().Assembly.Location ), loadSymbols ? System.IO.File.ReadAllBytes( GetType().Assembly.Location.Replace( ".dll", ".pdb" ) ) : null );
 		s.AddDocumentation( System.IO.File.ReadAllBytes( GetType().Assembly.Location.Replace( ".dll", ".xml" ) ) );
 
 		return s.Build();
@@ -22,7 +22,12 @@ public class ProcessorTest
 	{
 		var s = GetSchema();
 
-		var json = JsonSerializer.Serialize( s );
+		var options = new JsonSerializerOptions
+		{
+			WriteIndented = true,
+		};
+
+		var json = JsonSerializer.Serialize( s, options );
 		Assert.IsNotNull( json );
 
 		var dejson = JsonSerializer.Deserialize<Schema>( json );
@@ -319,5 +324,20 @@ public class ProcessorTest
 
 		Console.WriteLine( cs.Documentation.Params.First() );
 		Assert.AreEqual( 2, cs.Documentation.Params.Count() );
+	}
+
+	/// <summary>
+	/// Load without symbols
+	/// </summary>
+	[TestMethod]
+	public void WithoutSymbols()
+	{
+		var data = GetSchema( false );
+		var sp = data.Types.FirstOrDefault( x => x.Name == "SpringfieldExtensions" );
+		var extensionMethod = sp.Methods.FirstOrDefault( x => x.Name == "IsGoodSpringfield" );
+
+		Assert.IsNotNull( extensionMethod );
+		Assert.IsTrue( extensionMethod.IsExtension );
+		Assert.IsTrue( sp.IsExtension );
 	}
 }

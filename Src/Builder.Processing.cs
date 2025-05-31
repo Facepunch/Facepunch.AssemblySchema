@@ -6,10 +6,62 @@ public partial class Builder
 {
 	private void ProcessAssembly( Schema info, AssemblyDefinition assembly )
 	{
+		// we want to find the smallest path they all have in common
+		// and we'll treat this as the project root
+		var rootPath = FindCommonPathPrefix( assembly );
+		rootPath = rootPath.Replace( "\\", "/" ).TrimEnd( '/' );
+
 		foreach ( var type in assembly.MainModule.Types )
 		{
-			info.Types.AddRange( ProcessType( assembly, type ) );
+			info.Types.AddRange( ProcessType( assembly, type, rootPath ) );
 		}
+	}
+
+	static IEnumerable<MethodDefinition> GetAllMethods( TypeDefinition type )
+	{
+		foreach ( var m in type.Methods )
+			yield return m;
+
+		foreach ( var nested in type.NestedTypes )
+			foreach ( var nm in GetAllMethods( nested ) )
+				yield return nm;
+	}
+
+	static string FindCommonPathPrefix( AssemblyDefinition assembly )
+	{
+		var paths = assembly.MainModule.Types
+			.SelectMany( t => GetAllMethods( t ) )
+			.Where( m => m.DebugInformation.HasSequencePoints )
+			.SelectMany( m => m.DebugInformation.SequencePoints )
+			.Select( sp => sp.Document.Url )
+			.Where( x => !x.Contains( ".nuget" ) )
+			.Distinct()
+			.ToList();
+
+		if ( paths.Count == 0 ) return "";
+
+		if ( false )
+		{
+			foreach ( var path in paths )
+			{
+				Console.WriteLine( $"{path}" );
+			}
+		}
+
+		var splitPaths = paths.Select( p => p.Split( Path.DirectorySeparatorChar ) ).ToList();
+		var minLen = splitPaths.Min( s => s.Length );
+
+		var common = new List<string>();
+		for ( int i = 0; i < minLen; i++ )
+		{
+			var segment = splitPaths[0][i];
+			if ( splitPaths.All( p => p[i] == segment ) )
+				common.Add( segment );
+			else
+				break;
+		}
+
+		return string.Join( Path.DirectorySeparatorChar, common );
 	}
 
 	internal Documentation FindDocumentation( string name )
@@ -31,7 +83,7 @@ public partial class Builder
 		return IsAttribute( typeDef.BaseType.Resolve() );
 	}
 
-	private IEnumerable<Schema.Type> ProcessType( AssemblyDefinition a, TypeDefinition type )
+	private IEnumerable<Schema.Type> ProcessType( AssemblyDefinition a, TypeDefinition type, string projectPath )
 	{
 		if ( type.IsNestedPrivate || type.FullName == "<Module>" )
 			return Array.Empty<Schema.Type>();
@@ -41,6 +93,7 @@ public partial class Builder
 
 		var t = new Schema.Type();
 
+		t.Assembly = a.Name.Name;
 		t.Source = type;
 		t.IsPublic = type.IsPublic;
 		t.IsStatic = type.IsSealed && type.IsAbstract;
@@ -59,6 +112,7 @@ public partial class Builder
 		t.Attributes = Schema.Attribute.From( type.CustomAttributes );
 		t.DocumentationId = GetDocumentationId( type );
 		t.Documentation = FindDocumentation( t.DocumentationId );
+		t._projectPath = projectPath;
 
 		if ( type.IsValueType ) t.Group = "struct";
 		if ( type.IsInterface ) t.Group = "interface";
@@ -98,7 +152,7 @@ public partial class Builder
 		{
 			if ( nestedType.IsNestedPrivate ) continue;
 
-			types.AddRange( ProcessType( a, nestedType ) );
+			types.AddRange( ProcessType( a, nestedType, projectPath ) );
 		}
 
 		return types;

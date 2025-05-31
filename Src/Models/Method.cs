@@ -15,6 +15,9 @@ public partial class Schema
 		public bool IsSealed { get; set; }
 		public List<Parameter> Parameters { get; set; }
 
+		[JsonPropertyName( "l" )]
+		public Location Location { get; set; }
+
 		public class Parameter
 		{
 			public string Name { get; set; }
@@ -46,7 +49,7 @@ public partial class Schema
 			var m = new Method();
 			m.Source = member;
 			m.Name = member.Name;
-			m.ReturnType = member.ReturnType?.FullName ?? "void";
+			m.ReturnType = member.ReturnType?.FullName ?? "System.Void";
 			m.IsPublic = member.IsPublic;
 			m.FullName = $"{t.FullName}.{m.Name}";
 			m.IsStatic = member.IsStatic;
@@ -60,6 +63,8 @@ public partial class Schema
 
 			m.DocumentationId = builder.GetDocumentationId( member );
 			m.Documentation = builder.FindDocumentation( m.DocumentationId );
+			m.Location = Location.From( builder, member, t._projectPath );
+
 			return m;
 		}
 

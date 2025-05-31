@@ -1,4 +1,6 @@
-﻿namespace Facepunch.AssemblySchema;
+﻿using System.Text.Json.Serialization;
+
+namespace Facepunch.AssemblySchema;
 
 public partial class Schema
 {
@@ -8,6 +10,9 @@ public partial class Schema
 		public bool IsVirtual { get; set; }
 		public bool IsOverride { get; set; }
 		public bool IsSealed { get; set; }
+
+		[JsonPropertyName( "l" )]
+		public Location Location { get; set; }
 
 		internal static Property From( Builder builder, Type t, PropertyDefinition member )
 		{
@@ -24,6 +29,7 @@ public partial class Schema
 			m.Attributes = Attribute.From( member.CustomAttributes );
 			m.DocumentationId = builder.GetDocumentationId( member );
 			m.Documentation = builder.FindDocumentation( m.DocumentationId );
+			m.Location = Location.From( builder, member.SetMethod ?? member.GetMethod, t._projectPath );
 
 			return m;
 		}
