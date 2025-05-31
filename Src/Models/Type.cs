@@ -26,7 +26,7 @@ public partial class Schema
 		public bool IsValueType { get; set; }
 		public string Group { get; set; }
 
-		[JsonPropertyName( "a" )]
+		[JsonPropertyName( "Assembly" )]
 		public string Assembly { get; set; }
 
 		[JsonIgnore]

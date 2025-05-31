@@ -20,22 +20,21 @@ public partial class Schema
 
 		public class Parameter
 		{
-			[JsonPropertyName( "n" )]
 			public string Name { get; set; }
 
-			[JsonPropertyName( "o" )]
+			[JsonPropertyName( "Out" )]
 			public bool IsOut { get; set; }
 
-			[JsonPropertyName( "i" )]
+			[JsonPropertyName( "In" )]
 			public bool IsIn { get; set; }
 
-			[JsonPropertyName( "r" )]
+			[JsonPropertyName( "Ref" )]
 			public bool IsRef { get; set; }
 
-			[JsonPropertyName( "t" )]
+			[JsonPropertyName( "Type" )]
 			public string ParameterType { get; set; }
 
-			[JsonPropertyName( "d" )]
+			[JsonPropertyName( "Default" )]
 			public string DefaultValue { get; set; }
 
 			internal static Parameter From( ParameterDefinition x )

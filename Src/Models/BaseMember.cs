@@ -17,7 +17,7 @@ public partial class Schema
 		public List<Attribute> Attributes { get; set; }
 		public Documentation Documentation { get; set; }
 
-		[JsonPropertyName( "d" )]
+		[JsonPropertyName( "DocId" )]
 		public string DocumentationId { get; set; }
 
 		Type _declaringType;
@@ -39,10 +39,10 @@ public partial class Schema
 
 	public class Location
 	{
-		[JsonPropertyName( "f" )]
+		[JsonPropertyName( "File" )]
 		public string File { get; set; }
 
-		[JsonPropertyName( "l" )]
+		[JsonPropertyName( "Line" )]
 		public int Line { get; set; }
 
 		internal static Location From( Builder builder, MethodDefinition member, string projectPath )
