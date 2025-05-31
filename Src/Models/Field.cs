@@ -10,7 +10,7 @@ public partial class Schema
 		{
 			var m = new Field();
 			m.Name = member.Name;
-			m.FieldType = member.FieldType?.FullName ?? "void";
+			m.FieldType = Builder.GetTypeName( member.FieldType, "void" );
 			m.IsPublic = member.IsPublic;
 			m.FullName = $"{t.FullName}.{m.Name}";
 			m.IsStatic = member.IsStatic;

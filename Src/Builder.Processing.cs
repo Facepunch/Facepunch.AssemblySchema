@@ -204,5 +204,12 @@ public partial class Builder
 		t.Fields ??= new();
 		t.Fields.Add( m );
 	}
+
+	internal static string GetTypeName( TypeReference propertyType, string @default = null )
+	{
+		if ( propertyType is null ) return @default;
+
+		return propertyType.FullName.Replace( "+", "." ).Replace( "/", "." );
+	}
 }
 

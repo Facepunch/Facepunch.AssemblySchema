@@ -32,7 +32,7 @@ public partial class Schema
 				var a = new Parameter();
 				a.Name = x.Name;
 				a.IsOut = x.IsOut;
-				a.ParameterType = x.ParameterType.FullName;
+				a.ParameterType = Builder.GetTypeName( x.ParameterType, null );
 
 				if ( x.IsOptional )
 				{
@@ -63,7 +63,7 @@ public partial class Schema
 			var m = new Method();
 			m.Source = member;
 			m.Name = member.Name;
-			m.ReturnType = member.ReturnType?.FullName ?? "System.Void";
+			m.ReturnType = Builder.GetTypeName( member.ReturnType, "System.Void" );
 			m.IsPublic = member.IsPublic;
 			m.FullName = $"{t.FullName}.{m.Name}";
 			m.IsStatic = member.IsStatic;

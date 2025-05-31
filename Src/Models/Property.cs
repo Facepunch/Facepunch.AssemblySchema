@@ -18,7 +18,7 @@ public partial class Schema
 		{
 			var m = new Property();
 			m.Name = member.Name;
-			m.PropertyType = member.PropertyType?.FullName ?? "void";
+			m.PropertyType = Builder.GetTypeName( member.PropertyType, "void" );
 			m.IsPublic = member.GetMethod?.IsPublic ?? false;
 			m.IsPublic = m.IsPublic || (member.SetMethod?.IsPublic ?? false);
 			m.FullName = $"{t.FullName}.{m.Name}";

@@ -10,7 +10,7 @@ public partial class Schema
 		internal static Attribute From( CustomAttribute x )
 		{
 			var a = new Attribute();
-			a.FullName = x.AttributeType.FullName;
+			a.FullName = Builder.GetTypeName( x.AttributeType, null );
 			a.ConstructorArguments = x.ConstructorArguments.Select( x => $"{x.Value}" ).ToArray();
 			if ( a.ConstructorArguments.Length == 0 ) a.ConstructorArguments = null;
 

@@ -334,6 +334,8 @@ public class ProcessorTest
 
 		Console.WriteLine( cs.Documentation.Params.First() );
 		Assert.AreEqual( 2, cs.Documentation.Params.Count() );
+
+		Assert.AreEqual( "GpuBuffer.UsageFlags", cs.Parameters[2].ParameterType );
 	}
 
 	/// <summary>
