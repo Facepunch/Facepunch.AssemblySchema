@@ -307,6 +307,16 @@ public class ProcessorTest
 	}
 
 	[TestMethod]
+	public void FindsEnumsWhenStripping()
+	{
+		var data = GetSchema();
+		data.StripNonPublic();
+
+		var sp = data.Types.FirstOrDefault( x => x.FullName == "GpuBuffer.UsageFlags" );
+		Assert.IsNotNull( sp );
+	}
+
+	[TestMethod]
 	public void DocumentationComplicatedConstructor()
 	{
 		var data = GetSchema();

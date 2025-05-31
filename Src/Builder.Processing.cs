@@ -95,7 +95,7 @@ public partial class Builder
 
 		t.Assembly = a.Name.Name;
 		t.Source = type;
-		t.IsPublic = type.IsPublic;
+		t.IsPublic = type.IsPublic || type.IsNestedPublic;
 		t.IsStatic = type.IsSealed && type.IsAbstract;
 		t.FullName = type.FullName.Replace( "/", "." );
 		t.Namespace = type.Namespace;
