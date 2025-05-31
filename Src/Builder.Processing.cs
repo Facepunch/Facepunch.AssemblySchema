@@ -83,7 +83,7 @@ public partial class Builder
 		return IsAttribute( typeDef.BaseType.Resolve() );
 	}
 
-	private IEnumerable<Schema.Type> ProcessType( AssemblyDefinition a, TypeDefinition type, string projectPath )
+	private IEnumerable<Schema.Type> ProcessType( AssemblyDefinition a, TypeDefinition type, string projectPath, bool nestingTypeIsPublic = true )
 	{
 		if ( type.IsNestedPrivate || type.FullName == "<Module>" )
 			return Array.Empty<Schema.Type>();
@@ -95,7 +95,7 @@ public partial class Builder
 
 		t.Assembly = a.Name.Name;
 		t.Source = type;
-		t.IsPublic = type.IsPublic || type.IsNestedPublic;
+		t.IsPublic = (type.IsPublic || type.IsNestedPublic) && nestingTypeIsPublic;
 		t.IsStatic = type.IsSealed && type.IsAbstract;
 		t.FullName = type.FullName.Replace( "/", "." );
 		t.Namespace = type.Namespace;
@@ -152,7 +152,7 @@ public partial class Builder
 		{
 			if ( nestedType.IsNestedPrivate ) continue;
 
-			types.AddRange( ProcessType( a, nestedType, projectPath ) );
+			types.AddRange( ProcessType( a, nestedType, projectPath, t.IsPublic ) );
 		}
 
 		return types;

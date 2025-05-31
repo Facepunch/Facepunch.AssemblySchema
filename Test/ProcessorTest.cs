@@ -352,4 +352,22 @@ public class ProcessorTest
 		Assert.IsTrue( extensionMethod.IsExtension );
 		Assert.IsTrue( sp.IsExtension );
 	}
+
+	/// <summary>
+	/// File sceoped classes should get ignored
+	/// </summary>
+	[TestMethod]
+	public void FileTypeIgnored()
+	{
+		var data = GetSchema();
+		data.StripNonPublic();
+
+		var sp = data.Types.FirstOrDefault( x => x.FullName.EndsWith( "MyFileClass" ) );
+
+		Assert.IsNull( sp );
+
+		var spn = data.Types.FirstOrDefault( x => x.FullName.EndsWith( "MyFileClassNested" ) );
+
+		Assert.IsNull( spn );
+	}
 }
