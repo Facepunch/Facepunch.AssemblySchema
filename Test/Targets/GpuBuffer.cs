@@ -74,7 +74,7 @@ public partial class GpuBuffer
 	/// </summary>
 	/// <param name="elementCount">The total number of elements that the GpuBuffer can hold. This represents the buffer's size in terms of elements, not bytes.</param>
 	/// <param name="elementSize">The total number of elements that the GpuBuffer can hold. This represents the buffer's size in terms of elements, not bytes.</param>
-	public GpuBuffer( int elementCount = 0, int elementSize = 0 )
+	public GpuBuffer( int elementCount = 0, int elementSize = 0, UsageFlags usage = default )
 	{
 
 	}
@@ -89,6 +89,42 @@ public partial class GpuBuffer
 	public void GetData<T>( Span<T> data ) where T : unmanaged
 	{
 
+	}
+
+	/// <summary>
+	/// You can combine these e.g UsageFlags.Index | UsageFlags.ByteAddress for a buffer that can be used as an index buffer and in a compute shader.
+	/// </summary>
+	[Flags]
+	public enum UsageFlags
+	{
+		/// <summary>
+		/// Can be used as a vertex buffer.
+		/// </summary>
+		Vertex = 0x0001,
+		/// <summary>
+		/// Can be used as an index buffer.
+		/// </summary>
+		Index = 0x0002,
+		/// <summary>
+		/// Byte Address Buffer (HLSL RWByteAddressBuffer)
+		/// </summary>
+		ByteAddress = 0x0010,
+		/// <summary>
+		/// Structured Buffer (HLSL RWStructuredBuffer)
+		/// </summary>
+		Structured = 0x0020,
+		/// <summary>
+		/// Append Structured Buffer (HLSL AppendStructuredBuffer)
+		/// </summary>
+		Append = 0x0040,
+		[Obsolete( "Structured and Append buffers automatically have counters" )]
+		Counter = 0x0080,
+		/// <summary>
+		/// Indirect argument buffer for indirect draws
+		/// <seealso cref="GpuBuffer.IndirectDrawArguments"/>
+		/// <seealso cref="IndirectDrawIndexedArguments"/>
+		/// </summary>
+		IndirectDrawArguments = 0x0100
 	}
 }
 

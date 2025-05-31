@@ -53,7 +53,7 @@ public partial class Builder
 				return GetParameterTypeName( pt.ElementType ) + "*";
 
 			default:
-				return type.FullName.Replace( "/", "+" );
+				return type.FullName.Replace( "/", "." );
 		}
 	}
 }
