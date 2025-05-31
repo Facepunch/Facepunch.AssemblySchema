@@ -1,10 +1,15 @@
-﻿namespace Facepunch.AssemblySchema;
+﻿using System.Text.Json.Serialization;
+
+namespace Facepunch.AssemblySchema;
 
 public partial class Schema
 {
 	public class Attribute
 	{
+		[JsonPropertyName( "n" )]
 		public string FullName { get; set; }
+
+		[JsonPropertyName( "a" )]
 		public object[] ConstructorArguments { get; set; }
 
 		internal static Attribute From( CustomAttribute x )

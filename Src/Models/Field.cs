@@ -1,9 +1,12 @@
-﻿namespace Facepunch.AssemblySchema;
+﻿using System.Text.Json.Serialization;
+
+namespace Facepunch.AssemblySchema;
 
 public partial class Schema
 {
 	public class Field : BaseMember
 	{
+		[JsonPropertyName( "ft" )]
 		public string FieldType { get; set; }
 
 		internal static Field From( Builder builder, Type t, FieldDefinition member )

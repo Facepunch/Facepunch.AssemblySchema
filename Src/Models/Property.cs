@@ -6,9 +6,16 @@ public partial class Schema
 {
 	public class Property : BaseMember
 	{
+		[JsonPropertyName( "pt" )]
 		public string PropertyType { get; set; }
+
+		[JsonPropertyName( "vt" )]
 		public bool IsVirtual { get; set; }
+
+		[JsonPropertyName( "ov" )]
 		public bool IsOverride { get; set; }
+
+		[JsonPropertyName( "sl" )]
 		public bool IsSealed { get; set; }
 
 		[JsonPropertyName( "l" )]

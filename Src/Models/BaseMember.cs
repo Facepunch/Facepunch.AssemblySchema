@@ -7,14 +7,28 @@ public partial class Schema
 {
 	public class BaseMember
 	{
+		[JsonPropertyName( "pb" )]
 		public bool IsPublic { get; set; }
+
+		[JsonPropertyName( "st" )]
 		public bool IsStatic { get; set; }
+
+		[JsonPropertyName( "e" )]
 		public bool IsExtension { get; set; }
+
+		[JsonPropertyName( "fn" )]
 		public string FullName { get; set; }
+
+		[JsonPropertyName( "n" )]
 		public string Name { get; set; }
+
+		[JsonPropertyName( "dt" )]
 		public string DeclaringType { get; set; }
 
+		[JsonPropertyName( "att" )]
 		public List<Attribute> Attributes { get; set; }
+
+		[JsonPropertyName( "dc" )]
 		public Documentation Documentation { get; set; }
 
 		[JsonPropertyName( "d" )]

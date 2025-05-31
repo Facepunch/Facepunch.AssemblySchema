@@ -9,10 +9,19 @@ public partial class Schema
 		[JsonIgnore]
 		internal MethodDefinition Source { get; set; }
 
+		[JsonPropertyName( "r" )]
 		public string ReturnType { get; set; }
+
+		[JsonPropertyName( "v" )]
 		public bool IsVirtual { get; set; }
+
+		[JsonPropertyName( "o" )]
 		public bool IsOverride { get; set; }
+
+		[JsonPropertyName( "s" )]
 		public bool IsSealed { get; set; }
+
+		[JsonPropertyName( "p" )]
 		public List<Parameter> Parameters { get; set; }
 
 		[JsonPropertyName( "l" )]

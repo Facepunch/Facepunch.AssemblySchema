@@ -11,19 +11,46 @@ public partial class Schema
 		/// </summary>
 		internal string _projectPath;
 
+		[JsonPropertyName( "ns" )]
 		public string Namespace { get; set; }
+
+		[JsonPropertyName( "bt" )]
 		public string BaseType { get; set; }
+
+		[JsonPropertyName( "mt" )]
 		public List<Method> Methods { get; set; }
+
+		[JsonPropertyName( "cr" )]
 		public List<Method> Constructors { get; set; }
+
+		[JsonPropertyName( "pp" )]
 		public List<Property> Properties { get; set; }
+
+		[JsonPropertyName( "f" )]
 		public List<Field> Fields { get; set; }
+
+		[JsonPropertyName( "at" )]
 		public bool IsAttribute { get; set; }
+
+		[JsonPropertyName( "cl" )]
 		public bool IsClass { get; set; }
+
+		[JsonPropertyName( "if" )]
 		public bool IsInterface { get; set; }
+
+		[JsonPropertyName( "ias" )]
 		public bool IsAbstract { get; set; }
+
+		[JsonPropertyName( "sd" )]
 		public bool IsSealed { get; set; }
+
+		[JsonPropertyName( "em" )]
 		public bool IsEnum { get; set; }
+
+		[JsonPropertyName( "vt" )]
 		public bool IsValueType { get; set; }
+
+		[JsonPropertyName( "gp" )]
 		public string Group { get; set; }
 
 		[JsonPropertyName( "a" )]
