@@ -1,5 +1,5 @@
 
-Takes dlls and xmls, creates a schema that can be json serialized and transformed.
+Takes dlls and xmls, creates a schema that can be json serialized and transformed. Available as a package on nuget!
 
 ```csharp
 using var s = new Facepunch.AssemblySchema.Builder();
