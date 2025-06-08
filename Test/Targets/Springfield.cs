@@ -82,6 +82,13 @@ public static class SpringfieldExtensions
 	}
 }
 
+// to test Obsolete attribute handling, make sure we remove it
+public ref struct Frink
+{
+	public bool Professor;
+}
+
+
 file class MyFileClass
 {
 	public bool ShouldBeNonPublic { get; set; }

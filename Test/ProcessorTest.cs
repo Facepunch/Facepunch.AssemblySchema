@@ -370,4 +370,18 @@ public class ProcessorTest
 
 		Assert.IsNull( spn );
 	}
+
+	/// <summary>
+	/// Compiler added [Obsolete] flags on ref structs should be removed
+	/// </summary>
+	[TestMethod]
+	public void RemoveRefObsolete()
+	{
+		var s = GetSchema();
+
+		var fr = s.Types.FirstOrDefault( x => x.FullName.EndsWith( "Frink" ) );
+
+		Assert.IsNotNull( fr );
+		Assert.AreEqual( "System.Runtime.CompilerServices.IsByRefLikeAttribute", fr.Attributes[0].FullName );
+	}
 }
