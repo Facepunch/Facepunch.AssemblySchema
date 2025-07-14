@@ -1,4 +1,5 @@
-﻿using Mono.Cecil.Cil;
+﻿using System.Reflection.PortableExecutable;
+using Mono.Cecil.Cil;
 using System.Text.Json.Serialization;
 
 namespace Facepunch.AssemblySchema;
@@ -19,6 +20,9 @@ public partial class Schema
 
 		[JsonPropertyName( "DocId" )]
 		public string DocumentationId { get; set; }
+
+		[JsonPropertyName( "Loc" )]
+		public Location Location { get; set; }
 
 		Type _declaringType;
 		public Type GetDeclaringType() => _declaringType;
@@ -56,6 +60,39 @@ public partial class Schema
 
 			return new Location() { File = file, Line = sp.StartLine };
 		}
-	}
 
+		internal static Location From( Builder builder, FieldDefinition field, string projectPath )
+		{
+			var declaringType = field.DeclaringType;
+
+			var constructors = declaringType.Methods
+				.Where( m => m.IsConstructor && m.HasBody )
+				.Where( m => m.DebugInformation.HasSequencePoints );
+
+			foreach ( var ctor in constructors )
+			{
+				var instructions = ctor.Body.Instructions;
+				foreach ( var instruction in instructions )
+				{
+					if ( (instruction.OpCode == OpCodes.Stfld || instruction.OpCode == OpCodes.Stsfld) &&
+					     instruction.Operand is FieldReference fr &&
+					     fr.FullName == field.FullName )
+					{
+						SequencePoint sp = ctor.DebugInformation.SequencePoints
+							.LastOrDefault( s => s.Offset <= instruction.Offset );
+
+						if ( sp != null )
+						{
+							var file = sp.Document.Url.Replace( "\\", "/" );
+							file = file[projectPath.Length..].TrimStart( '/' );
+
+							return new Location() { File = file, Line = sp.StartLine };
+						}
+					}
+				}
+			}
+
+			return null;
+		}
+	}
 }

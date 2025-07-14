@@ -15,9 +15,6 @@ public partial class Schema
 		public bool IsSealed { get; set; }
 		public List<Parameter> Parameters { get; set; }
 
-		[JsonPropertyName( "l" )]
-		public Location Location { get; set; }
-
 		public class Parameter
 		{
 			public string Name { get; set; }

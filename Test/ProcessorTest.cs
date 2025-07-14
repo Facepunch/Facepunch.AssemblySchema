@@ -85,6 +85,12 @@ public class ProcessorTest
 		Assert.IsNotNull( maggie.Documentation );
 		Assert.IsNotNull( maggie.Documentation.Summary );
 
+		var population = sp.Fields.FirstOrDefault( x => x.Name == "Population" );
+		Assert.IsNotNull( population );
+		Assert.IsNotNull( population.Documentation );
+		Assert.IsNotNull( population.Documentation.Summary );
+		Assert.IsNotNull( population.Location );
+
 		var lisa = sp.Properties.FirstOrDefault( x => x.Name == "Lisa" );
 		Assert.IsNotNull( lisa );
 		Assert.IsNotNull( lisa.Documentation );

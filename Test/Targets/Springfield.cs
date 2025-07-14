@@ -12,6 +12,11 @@ public partial class Springfield : Town
 	public float Maggie;
 
 	/// <summary>
+	/// How many people live in Springfield
+	/// </summary>
+	public static int Population = 30000;
+
+	/// <summary>
 	/// An annoying know it all
 	/// </summary>
 	[Tag( "nerd" )]

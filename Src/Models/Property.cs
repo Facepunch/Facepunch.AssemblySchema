@@ -11,9 +11,6 @@ public partial class Schema
 		public bool IsOverride { get; set; }
 		public bool IsSealed { get; set; }
 
-		[JsonPropertyName( "Loc" )]
-		public Location Location { get; set; }
-
 		internal static Property From( Builder builder, Type t, PropertyDefinition member )
 		{
 			var m = new Property();
