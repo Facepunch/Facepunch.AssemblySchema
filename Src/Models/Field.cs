@@ -17,6 +17,7 @@ public partial class Schema
 			m.Attributes = Attribute.From( member.CustomAttributes );
 			m.DocumentationId = builder.GetDocumentationId( member );
 			m.Documentation = builder.FindDocumentation( m.DocumentationId );
+			m.Location = Location.From( builder, member, t._projectPath );
 
 			return m;
 		}
