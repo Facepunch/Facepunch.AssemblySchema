@@ -372,6 +372,34 @@ public class ProcessorTest
 	}
 
 	/// <summary>
+	/// Should keep protected members
+	/// </summary>
+	[TestMethod]
+	public void KeepProtectedMembers()
+	{
+		var data = GetSchema();
+		data.StripNonPublic();
+		var sp = data.Types.FirstOrDefault( x => x.FullName.EndsWith( "Springfield" ) );
+		Assert.IsNotNull( sp );
+		var fnc = sp.Methods.FirstOrDefault( x => x.FullName.EndsWith( "ProtectedMethod" ) );
+		Assert.IsNotNull( fnc );
+	}
+
+	/// <summary>
+	/// Should keep protected members
+	/// </summary>
+	[TestMethod]
+	public void DeleteProtectedMembers()
+	{
+		var data = GetSchema();
+		data.StripNonPublic( false );
+		var sp = data.Types.FirstOrDefault( x => x.FullName.EndsWith( "Springfield" ) );
+		Assert.IsNotNull( sp );
+		var fnc = sp.Methods.FirstOrDefault( x => x.FullName.EndsWith( "ProtectedMethod" ) );
+		Assert.IsNull( fnc );
+	}
+
+	/// <summary>
 	/// Compiler added [Obsolete] flags on ref structs should be removed
 	/// </summary>
 	[TestMethod]

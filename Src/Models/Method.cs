@@ -77,6 +77,7 @@ public partial class Schema
 			m.Name = member.Name;
 			m.ReturnType = Builder.GetTypeName( member.ReturnType, "System.Void" );
 			m.IsPublic = member.IsPublic;
+			m.IsProtected = member.IsFamily;
 			m.FullName = $"{t.FullName}.{m.Name}";
 			m.IsStatic = member.IsStatic;
 			m.IsVirtual = member.IsVirtual;

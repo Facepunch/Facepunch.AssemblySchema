@@ -12,6 +12,7 @@ public partial class Schema
 			m.Name = member.Name;
 			m.FieldType = Builder.GetTypeName( member.FieldType, "void" );
 			m.IsPublic = member.IsPublic;
+			m.IsProtected = member.IsFamily;
 			m.FullName = $"{t.FullName}.{m.Name}";
 			m.IsStatic = member.IsStatic;
 			m.Attributes = Attribute.From( member.CustomAttributes );

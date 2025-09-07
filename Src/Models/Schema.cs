@@ -13,7 +13,7 @@ public partial class Schema
 	/// <summary>
 	/// Strip all types and members that aren't public
 	/// </summary>
-	public void StripNonPublic()
+	public void StripNonPublic( bool keepProtected = true )
 	{
 		if ( Types is null )
 			return;
@@ -22,10 +22,12 @@ public partial class Schema
 
 		foreach ( var t in Types )
 		{
-			if ( t.Methods is not null ) t.Methods = t.Methods.Where( x => x.IsPublic ).ToList();
-			if ( t.Fields is not null ) t.Fields = t.Fields.Where( x => x.IsPublic ).ToList();
-			if ( t.Properties is not null ) t.Properties = t.Properties.Where( x => x.IsPublic ).ToList();
-			if ( t.Constructors is not null ) t.Constructors = t.Constructors.Where( x => x.IsPublic ).ToList();
+			bool captureProtected = keepProtected && !t.IsSealed;
+
+			if ( t.Methods is not null ) t.Methods = t.Methods.Where( x => x.IsPublic || (captureProtected && x.IsProtected) ).ToList();
+			if ( t.Fields is not null ) t.Fields = t.Fields.Where( x => x.IsPublic || (captureProtected && x.IsProtected) ).ToList();
+			if ( t.Properties is not null ) t.Properties = t.Properties.Where( x => x.IsPublic || (captureProtected && x.IsProtected) ).ToList();
+			if ( t.Constructors is not null ) t.Constructors = t.Constructors.Where( x => x.IsPublic || (captureProtected && x.IsProtected) ).ToList();
 		}
 	}
 

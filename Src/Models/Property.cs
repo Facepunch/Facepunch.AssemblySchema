@@ -21,6 +21,7 @@ public partial class Schema
 			m.PropertyType = Builder.GetTypeName( member.PropertyType, "void" );
 			m.IsPublic = member.GetMethod?.IsPublic ?? false;
 			m.IsPublic = m.IsPublic || (member.SetMethod?.IsPublic ?? false);
+			m.IsProtected = member.GetMethod?.IsFamily ?? false;
 			m.FullName = $"{t.FullName}.{m.Name}";
 			m.IsStatic = member.GetMethod?.IsStatic ?? member.SetMethod.IsStatic;
 			m.IsVirtual = member.GetMethod?.IsVirtual ?? member.SetMethod.IsVirtual;

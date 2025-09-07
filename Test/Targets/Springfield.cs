@@ -38,6 +38,14 @@ public partial class Springfield : Town
 	{
 
 	}
+
+	/// <summary>
+	/// Testing to make sure protected methods are not ignored
+	/// </summary>
+	protected void ProtectedMethod()
+	{
+
+	}
 }
 
 /// <summary>

@@ -8,6 +8,7 @@ public partial class Schema
 	public class BaseMember
 	{
 		public bool IsPublic { get; set; }
+		public bool IsProtected { get; set; }
 		public bool IsStatic { get; set; }
 		public bool IsExtension { get; set; }
 		public string FullName { get; set; }

@@ -40,14 +40,6 @@ public partial class Builder
 
 		if ( paths.Count == 0 ) return "";
 
-		if ( false )
-		{
-			foreach ( var path in paths )
-			{
-				Console.WriteLine( $"{path}" );
-			}
-		}
-
 		var splitPaths = paths.Select( p => p.Split( Path.DirectorySeparatorChar ) ).ToList();
 		var minLen = splitPaths.Min( s => s.Length );
 
